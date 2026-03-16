@@ -1,0 +1,115 @@
+{
+  "entities": {
+    "PatientProfile": {
+      "title": "Patient Profile",
+      "description": "Stores basic patient information and medical history summary.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "fullName": { "type": "string" },
+        "age": { "type": "number" },
+        "gender": { "type": "string", "enum": ["male", "female", "other"] },
+        "location": { "type": "string", "description": "Rural district or village name" },
+        "language": { "type": "string", "description": "Preferred language (e.g., Hindi, Tamil, English)" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "fullName", "language"]
+    },
+    "DiagnosisRecord": {
+      "title": "Diagnosis Record",
+      "description": "Stores AI-generated diagnosis and triage results.",
+      "type": "object",
+      "properties": {
+        "patientId": { "type": "string" },
+        "symptoms": { "type": "string" },
+        "imageUrls": { "type": "array", "items": { "type": "string" } },
+        "vitals": {
+          "type": "object",
+          "properties": {
+            "heartRate": { "type": "number" },
+            "temperature": { "type": "number" },
+            "bloodPressure": { "type": "string" }
+          }
+        },
+        "aiAnalysis": { "type": "string", "description": "Markdown formatted AI response" },
+        "triageLevel": { "type": "string", "enum": ["emergency", "urgent", "routine"] },
+        "language": { "type": "string" },
+        "doctorVerification": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["pending", "verified", "rejected"] },
+            "notes": { "type": "string" },
+            "medicines": { "type": "array", "items": { "type": "string" } },
+            "doctorId": { "type": "string" },
+            "verifiedAt": { "type": "string", "format": "date-time" }
+          }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["patientId", "symptoms", "triageLevel", "createdAt"]
+    },
+    "EmergencyAlert": {
+      "title": "Emergency Alert",
+      "description": "High-priority alerts for telemedicine integration.",
+      "type": "object",
+      "properties": {
+        "diagnosisId": { "type": "string" },
+        "patientId": { "type": "string" },
+        "location": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "dispatched", "resolved"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["diagnosisId", "patientId", "status"]
+    },
+    "Doctor": {
+      "title": "Doctor Profile",
+      "description": "Profiles of available doctors.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "fullName": { "type": "string" },
+        "specialty": { "type": "string" },
+        "rating": { "type": "number" },
+        "isAvailable": { "type": "boolean" },
+        "reviews": { "type": "array", "items": { "type": "string" } },
+        "experience": { "type": "string" }
+      },
+      "required": ["uid", "fullName", "specialty"]
+    },
+    "Appointment": {
+      "title": "Online Appointment",
+      "description": "Booked appointments between patients and doctors.",
+      "type": "object",
+      "properties": {
+        "patientId": { "type": "string" },
+        "doctorId": { "type": "string" },
+        "status": { "type": "string", "enum": ["scheduled", "completed", "cancelled"] },
+        "scheduledAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["patientId", "doctorId", "scheduledAt", "status"]
+    }
+  },
+  "firestore": {
+    "/patients/{uid}": {
+      "schema": "PatientProfile",
+      "description": "User profiles"
+    },
+    "/diagnoses/{diagnosisId}": {
+      "schema": "DiagnosisRecord",
+      "description": "Medical records"
+    },
+    "/alerts/{alertId}": {
+      "schema": "EmergencyAlert",
+      "description": "Triage alerts"
+    },
+    "/doctors/{uid}": {
+      "schema": "Doctor",
+      "description": "Doctor profiles"
+    },
+    "/appointments/{appointmentId}": {
+      "schema": "Appointment",
+      "description": "Bookings"
+    }
+  }
+}

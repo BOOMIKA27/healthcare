@@ -1,0 +1,8 @@
+{
+  "name": "RuralHealth AI",
+  "description": "AI-powered remote diagnosis and triage system for rural healthcare, supporting multilingual inputs and emergency prioritization.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
